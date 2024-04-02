@@ -13,6 +13,7 @@ import requests
 access_code = 'viapcampagna'
 KeyBoard = Controller()
 psw_def_lenght = 12
+weather_api_key = '72aeef4512500a15bbd668cec05fdb34'
 
 # Hotkeys
 def new_tab():
@@ -184,10 +185,9 @@ def start():
                 login()
             elif 'meteo' in main_task_request.lower():
                 city = input("Per quale città vuoi conoscere il meteo?")
-                api_key = '72aeef4512500a15bbd668cec05fdb34'  # Assicurati di ottenere la tua chiave API da un servizio di previsioni meteorologiche
                 base_url = 'http://api.openweathermap.org/data/2.5/weather?'
 
-                complete_url = base_url + 'q=' + city + '&appid=' + api_key
+                complete_url = base_url + 'q=' + city + '&appid=' + weather_api_key
 
                 response = requests.get(complete_url)
 
