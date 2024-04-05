@@ -231,8 +231,9 @@ def Iris_modules(main_task_request):
 
 
 def start():
-    main_task_request = input("Buongiorno signore, cosa le serve?")
-    Iris_modules(main_task_request)
+    while True:
+        main_task_request = input("Buongiorno signore, cosa le serve?")
+        Iris_modules(main_task_request)
 
 
 def login():
