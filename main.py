@@ -9,11 +9,15 @@ import secrets
 import string
 import datetime
 import requests
+import json
 
-access_code = 'viapcampagna'
 KeyBoard = Controller()
-psw_def_lenght = 12
-weather_api_key = '72aeef4512500a15bbd668cec05fdb34'
+
+with open('config.json') as config_file:
+    config_data = json.load(config_file)
+    access_code = config_data['access_code']
+    weather_api_key = config_data['weather_api_key']
+    psw_def_length = config_data['psw_def_length']
 
 
 # Hotkeys
@@ -28,8 +32,6 @@ def new_window():
         KeyBoard.press('n')
         KeyBoard.release('n')
 
-
-print('cao')
 
 def Iris_modules(main_task_request):
     # Website saved
@@ -144,7 +146,7 @@ def Iris_modules(main_task_request):
 
     elif 'gener' in main_task_request.lower() or 'password' in main_task_request.lower() or 'casual' in main_task_request.lower() or 'random' in main_task_request.lower():
         caratteri = string.ascii_letters + string.digits
-        password = ''.join(secrets.choice(caratteri) for _ in range(psw_def_lenght))
+        password = ''.join(secrets.choice(caratteri) for _ in range(psw_def_length))
         print("La password casuale generata è:", password)
 
     elif 'reset' in main_task_request.lower():

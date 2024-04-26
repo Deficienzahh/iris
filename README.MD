@@ -2,7 +2,7 @@
 Iris is a virtual assistant that can help you to simplify some pc action
 
 ## Prerequisites
-It works on MacOS and Linux (not tested) but you have to install all the dependencies with this commands:
+It works on macOS and Linux (not tested) but you have to install all the dependencies with this commands:
 ``` bash
 pip install keyboard
 pip install pynput
@@ -13,11 +13,13 @@ pip install requests
 ## Installation
 To install Iris you can simply download this repository and modify some files to make it work
 
-In file "main.py" modify the first variables
-```python
-access_code = ''#insert the password you would use to access to iris
-psw_def_lenght = 12 #The default lenght of the random password you can generate
-weather_api_key = '' #Your API key on openweather website
+Create a file named 'config.json' in this folder, copy this code and write your preferences
+```json
+{
+    "access_code": " ", 
+    "weather_api_key": " ",
+    "psw_def_length": 12
+}
 ```
 You can also add it to .zshrc file in your terminal as an alias to start it everywhere 
 

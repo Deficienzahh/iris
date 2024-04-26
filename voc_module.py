@@ -1,4 +1,3 @@
-from flask import Flask, request
 import webbrowser
 import socket
 import subprocess
@@ -10,9 +9,9 @@ import secrets
 import string
 import datetime
 import requests
+import speech_recognition as sr
 
 
-app = Flask(__name__)
 
 access_code = 'viapcampagna'
 KeyBoard = Controller()
@@ -31,28 +30,6 @@ def new_window():
     with KeyBoard.pressed(Key.cmd):
         KeyBoard.press('n')
         KeyBoard.release('n')
-
-
-#flask
-def handle_website_request(url):
-    subprocess.Popen(["open", url])
-
-
-def handle_application_request(application_path):
-    subprocess.Popen(["open", application_path])
-
-
-# Funzioni per le rotte del backend Flask
-@app.route('/')
-def home():
-    return 'Benvenuto nel backend di Iris!'
-
-
-@app.route('/ask', methods=['POST'])
-def ask_question():
-    question = request.form['question']
-    return Iris_modules(question)
-
 
 
 def Iris_modules(main_task_request):
@@ -255,10 +232,21 @@ def Iris_modules(main_task_request):
 
 
 def start():
-    main_task_request = input("Buongiorno signore, cosa le serve?")
-    Iris_modules(main_task_request)
+    while True:
+        r = sr.Recognizer()
+        with sr.Microphone() as source:
+            print("Ascolto...")
+            r.adjust_for_ambient_noise(source)
+            audio = r.listen(source)
 
-
+        try:
+            transcribed_text = r.recognize_sphinx(audio, show_all=False)
+            print("Trascrizione:", transcribed_text)
+            Iris_modules(transcribed_text)
+        except sr.UnknownValueError:
+            print("Sphinx non ha potuto comprendere il parlato")
+        except sr.RequestError as e:
+            print("Errore durante la richiesta al servizio di riconoscimento vocale: {0}".format(e))
 def login():
     print('Caricamento...')
     writed_access_code = input("IRIS è protetto da una password, immettila per continuare:")
@@ -270,6 +258,5 @@ def login():
         login()
 
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    login()
