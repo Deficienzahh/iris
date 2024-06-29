@@ -11,10 +11,12 @@ import datetime
 import requests
 import json
 import os
+from colorama import Fore, Style, init
+init() #initialize colorama
 KeyBoard = Controller()
 
 
-#json file
+#json fileff
 script_dir = os.path.dirname(os.path.realpath(__file__))
 config_path = os.path.join(script_dir, 'config.json')
 with open('config.json') as config_file:
@@ -22,18 +24,25 @@ with open('config.json') as config_file:
     access_code = config_data['access_code']
     weather_api_key = config_data['weather_api_key']
     psw_def_length = config_data['psw_def_length']
+    debug = config_data['debug']
 
 def wishme():
     hour = datetime.datetime.now().hour
     if hour >= 6 and  hour <= 12:
-        print('Buongiorno signore')
+        return('Buongiorno signore')
     elif hour >= 12 and  hour <= 18:
-        print('Buonpomeriggio signore')
+        return('Buonpomeriggio signore')
     elif hour >= 18 and  hour <= 24:
-        print('Buonasera signore')
+        return('Buonasera signore')
     else:
-        print('Buonanotte signore')
+        return('Buonanotte signore')
 # Hotkeys
+def printc(text, color=Fore.WHITE):
+    print(color + text + Style.RESET_ALL)
+
+def inputc(text, color=Fore.WHITE):
+    prompt_colored = color + text + Style.RESET_ALL
+    return input(prompt_colored)
 def new_tab():
     with KeyBoard.pressed(Key.cmd):
         KeyBoard.press('t')
@@ -69,7 +78,13 @@ def orario():
 
 
 def Iris_modules(query):
-    # Website saved
+    query = query.strip().lower()
+    if debug == True:
+        print("*DEBUG* Query ricevuta: ", query)
+    else:
+        pass 
+
+    # Saved website
     if 'google' in query.lower():
         webbrowser.open("https://www.google.com")
     elif 'gmail' in query.lower():
@@ -86,6 +101,8 @@ def Iris_modules(query):
         webbrowser.open("https://gemini.google.com/app")
     elif 'cmacked' in query.lower():
         webbrowser.open("https://cmacked.com/page/2/")
+    elif 'torrent' in query.lower():
+        webbrowser.open("https://www.torrentmac.net/")
     elif 'youtube' in query.lower() or 'yt' in query.lower():
         webbrowser.open("https://www.youtube.com")
     elif 'instagram' in query.lower() or 'ig' in query.lower():
@@ -100,6 +117,10 @@ def Iris_modules(query):
         webbrowser.open("https://www.amazon.it")
     elif 'twitch' in query.lower():
         webbrowser.open("https://www.twich.tv")
+    elif 'speedtest' in query.lower():
+        webbrowser.open("https://www.speedtest.net")
+    elif 'chatgpt' in query.lower():
+        webbrowser.open('https://chat.openai.com')
     # App
     elif 'premiere' in query.lower():
         subprocess.Popen([
@@ -119,8 +140,8 @@ def Iris_modules(query):
     elif 'whatsapp' in query.lower():
         subprocess.Popen(["/Applications/WhatsApp.app/Contents/MacOS/WhatsApp"])
     # Other internet function
-    elif 'IP' in query.lower():
-        print("Sto ottenendo le diagnostiche di rete")
+    elif 'ip' in query.lower():
+        printc("Sto ottenendo le diagnostiche di rete", Fore.BLUE)
         hostname = socket.gethostname()
         ip = socket.gethostbyname(hostname)
         print("Host:", hostname)
@@ -131,13 +152,21 @@ def Iris_modules(query):
     # Command from terminal
     elif 'asitop' in query.lower():
         subprocess.run(["open", "-a", "iTerm"])
-        keyboard.write('sudo asitop')
+        new_window()
+        time.sleep(3)
+        keyboard.write("sudo")
+        time.sleep(1)
+        keyboard.send('space')
+        keyboard.write('asitop')
         keyboard.send('enter')
         keyboard.write(access_code)
         keyboard.send('enter')
     elif 'neofetch' in query.lower():
         subprocess.run(["open", "-a", "iTerm"])
+        new_window
+        time.sleep(1)
         keyboard.write('neofetch')
+        time.sleep(1)
         keyboard.send('enter')
     elif 'diagnostic' in query.lower():
         subprocess.Popen(["open", "-a", "iTerm"])
@@ -180,10 +209,10 @@ def Iris_modules(query):
 
         print('Ecco fatto!')
 
-    elif 'CPU' in query.lower():
+    elif 'cpu' in query.lower():
         cpu_percent = psutil.cpu_percent()
         print("L'utilizzo della CPU è:", cpu_percent, "%")
-    elif 'RAM' in query.lower():
+    elif 'ram' in query.lower():
         mem_percent = psutil.virtual_memory().percent
         print("L'utilizzo della RAM è:", mem_percent, "%")
     elif 'batteria' in query.lower():
@@ -195,24 +224,12 @@ def Iris_modules(query):
         caratteri = string.ascii_letters + string.digits
         password = ''.join(secrets.choice(caratteri) for _ in range(psw_def_length))
         print("La password casuale generata è:", password)
-
-    elif 'reset' in query.lower():
-        reset_psw_request = input('Sei sicuro di voler reimpostare la password?(y/n)')
-        if reset_psw_request == 'y':
-            print("Non posso modificare la password mentre il sistema è in esecuzione")
-            print("Apri il mio codice sorgente e modificala manualmente, grazie")
-        else:
-            print("Ok annullo l'operazione")
-            start()
     elif 'chi' in query.lower() or 'sei' in query.lower() or 'chi sei' in query.lower():
         print("Io sono IRIS, l'Intelligenza Rivoluzionaria, Intuitiva e Sperimentale")
     elif 'ora' in query.lower() or 'ore' in query.lower():
         orario()
     elif 'giorno' in query.lower():
         date()
-
-    elif 'speedtest' in query.lower():
-        webbrowser.open("https://www.speedtest.net")
     elif 'riavvi' in query.lower():
         login()
     elif 'standby' in query.lower():
@@ -235,9 +252,6 @@ def Iris_modules(query):
                 f"A {city} il tempo è {main_data} ({description}) con una temperatura di {temperature_celsius:.2f}°C")
         else:
             print("Impossibile ottenere informazioni meteo per la città specificata.")
-
-    elif 'chatgpt' in query.lower():
-        webbrowser.open('https://chat.openai.com')
 
     elif 'screenshot' in query.lower():
         time.sleep(5)
@@ -269,28 +283,10 @@ def Iris_modules(query):
             keyboard.send('enter')
         else:
             print('Non ho capito')
-    elif 'event' in query.lower():
-        try:
-            service = googleapiclient.discovery.build('calendar', 'v3', credentials=credentials)
-            event = {
-                'summary': 'Evento di prova',
-                'description': 'Descrizione dell\'evento di prova',
-                'start': {
-                    'dateTime': '2024-05-04T10:00:00',
-                    'timeZone': 'Europe/Rome',
-                },
-                'end': {
-                    'dateTime': '2024-05-04T12:00:00',
-                    'timeZone': 'Europe/Rome',
-                },
-            }
-            event = service.events().insert(calendarId='ee2f7c819d7e9ed40b888b90f528f8380b069702a165fb2311aa29afaf31b1e6@group.calendar.google.com', body=event).execute()
-            print('Evento creato:', event.get('htmlLink'))
-        except Exception as e:
-            print('Si è verificato un errore durante la creazione dell\'evento:', e)
-
+    elif 'timer' in query.lower():
+         printc('*DEBUG* Questa funzione non è ancor disponibile', Fore.RED)
     else:
-        print("Non ho capito o forse i server hanno un malfunzionamento")
+        print("Non ho capito o forse ho un malfunzionamento")
         restart_request = input("Provo a effettuare un riavvio?(y/n)")
         if restart_request == "y":
             login()
@@ -299,23 +295,36 @@ def Iris_modules(query):
 
 
 def start():
-    wishme()
+    print('')
+    printc(wishme(), Fore.BLUE)
     while True:
-        query = input("Come posso aiutarla oggi?")
+        query = inputc("Come posso aiutarla oggi?", Fore.BLUE)
         Iris_modules(query)
 
 
 def login():
     print('Caricamento...')
     time.sleep(1)
-    writed_access_code = input("IRIS è protetto da una password, immettila per continuare:")
-    if writed_access_code == access_code:
-        print("*Accesso eseguito*")
+    if debug == True: 
+        printc("*Accesso eseguito con chiave di debug*", Fore.RED)
         start()
     else:
-        print("Le credenziali di accesso sono errate, riprova")
+        pass
+    writed_access_code = inputc("IRIS è protetto da una password, immettila per continuare:", Fore.RED)
+    if writed_access_code == access_code:
+        printc("*Accesso eseguito*", Fore.GREEN)
+        start()
+    else:
+        printc("Le credenziali di accesso sono errate, riprova", Fore.RED)
+        login()
+
+def debug_verify():
+    if debug == True:
+        print("*DEBUG ON*")
+        login()
+    else:
         login()
 
 
 if __name__ == '__main__':
-    login()
+    debug_verify()
