@@ -13,10 +13,10 @@ import json
 import os
 from colorama import Fore, Style, init
 init() #initialize colorama
-KeyBoard = Controller()
+KeyBoard = Controller() #need this for shortcut
 
 
-#json fileff
+#json file
 script_dir = os.path.dirname(os.path.realpath(__file__))
 config_path = os.path.join(script_dir, 'config.json')
 with open('config.json') as config_file:
@@ -26,7 +26,16 @@ with open('config.json') as config_file:
     psw_def_length = config_data['psw_def_length']
     debug = config_data['debug']
 
-def wishme():
+def debug_recheck():
+    with open('config.json') as config_file:
+        config_data = json.load(config_file)
+        rdebug = config_data['debug']
+def debug_var_check():
+    with open('config.json') as config_file:
+        config_data = json.load(config_file)
+        rdebug = config_data['debug']
+    print(rdebug)
+def wishme():  
     hour = datetime.datetime.now().hour
     if hour >= 6 and  hour <= 12:
         return('Buongiorno signore')
@@ -142,15 +151,21 @@ def Iris_modules(query):
     # Other internet function
     elif 'ip' in query.lower():
         printc("Sto ottenendo le diagnostiche di rete", Fore.BLUE)
-        hostname = socket.gethostname()
-        ip = socket.gethostbyname(hostname)
-        print("Host:", hostname)
-        print("Indirizzo IP:", ip)
+        time.sleep(1)
+        try:
+            hostname = socket.gethostname()
+            ip = socket.gethostbyname(hostname)
+            print("Host:", hostname)
+            print("Indirizzo IP:", ip)
+        except socket.error as e:
+            printc(Fore.BLUE + "Sto riscontrando un problema con la rete internet:", e)
     elif 'ping' in query.lower() or 'net' in query.lower() or 'internet' in query.lower():
+        printc("Eseguo il comando ping", Fore.BLUE)
         ping_command = ["ping", "-c", "5", "4.4.4.4"]
         subprocess.call(ping_command)
     # Command from terminal
     elif 'asitop' in query.lower():
+        printc("Eseguo", Fore.BLUE)
         subprocess.run(["open", "-a", "iTerm"])
         new_window()
         time.sleep(3)
@@ -162,6 +177,7 @@ def Iris_modules(query):
         keyboard.write(access_code)
         keyboard.send('enter')
     elif 'neofetch' in query.lower():
+        printc("Eseguo", Fore.BLUE)
         subprocess.run(["open", "-a", "iTerm"])
         new_window
         time.sleep(1)
@@ -169,6 +185,7 @@ def Iris_modules(query):
         time.sleep(1)
         keyboard.send('enter')
     elif 'diagnostic' in query.lower():
+        printc("Eseguo", Fore.BLUE)
         subprocess.Popen(["open", "-a", "iTerm"])
         new_window()
 
@@ -207,25 +224,25 @@ def Iris_modules(query):
 
         subprocess.run(["open", "-a", "Activity Monitor"])
 
-        print('Ecco fatto!')
+        printc("Fatto", Fore.BLUE)
 
     elif 'cpu' in query.lower():
         cpu_percent = psutil.cpu_percent()
-        print("L'utilizzo della CPU è:", cpu_percent, "%")
+        printc(Fore.GREEN + f"L'utilizzo della CPU è: {cpu_percent}%")
     elif 'ram' in query.lower():
         mem_percent = psutil.virtual_memory().percent
-        print("L'utilizzo della RAM è:", mem_percent, "%")
+        printc(Fore.GREEN + f"L'utilizzo della RAM è: {mem_percent}%")
     elif 'batteria' in query.lower():
         battery = psutil.sensors_battery()
         battery_percent = battery.percent
-        print("La batteria è al", battery_percent, "%")
+        printc(Fore.GREEN + f"La batteria è al {battery_percent}%")
 
     elif 'gener' in query.lower() or 'password' in query.lower() or 'casual' in query.lower() or 'random' in query.lower():
         caratteri = string.ascii_letters + string.digits
         password = ''.join(secrets.choice(caratteri) for _ in range(psw_def_length))
-        print("La password casuale generata è:", password)
+        print(Fore.BLUE + f"La password casuale generata è: {password}")
     elif 'chi' in query.lower() or 'sei' in query.lower() or 'chi sei' in query.lower():
-        print("Io sono IRIS, l'Intelligenza Rivoluzionaria, Intuitiva e Sperimentale")
+        printc("Io sono IRIS, l'Intelligenza Rivoluzionaria, Intuitiva e Sperimentale", Fore.BLUE)
     elif 'ora' in query.lower() or 'ore' in query.lower():
         orario()
     elif 'giorno' in query.lower():
@@ -237,21 +254,27 @@ def Iris_modules(query):
     elif 'meteo' in query.lower():
         city = input("Per quale città vuoi conoscere il meteo?")
         base_url = 'http://api.openweathermap.org/data/2.5/weather?'
+        try:
+            complete_url = base_url + 'q=' + city + '&appid=' + weather_api_key
 
-        complete_url = base_url + 'q=' + city + '&appid=' + weather_api_key
+            response = requests.get(complete_url)
 
-        response = requests.get(complete_url)
-
-        if response.status_code == 200:
-            data = response.json()
-            main_data = data['weather'][0]['main']
-            description = data['weather'][0]['description']
-            temperature = data['main']['temp']
-            temperature_celsius = temperature - 273.15  # La temperatura è fornita in Kelvin, convertiamola in Celsius
-            print(
-                f"A {city} il tempo è {main_data} ({description}) con una temperatura di {temperature_celsius:.2f}°C")
-        else:
-            print("Impossibile ottenere informazioni meteo per la città specificata.")
+            if response.status_code == 200:
+                data = response.json()
+                main_data = data['weather'][0]['main']
+                description = data['weather'][0]['description']
+                temperature = data['main']['temp']
+                temperature_celsius = temperature - 273.15  # La temperatura è fornita in Kelvin e successivamente convertita in Celsius
+                print(
+                    f"A {city} il tempo è {main_data} ({description}) con una temperatura di {temperature_celsius:.2f}°C")
+            else:
+                print("Impossibile ottenere informazioni meteo per la città specificata.")
+        except requests.RequestException as e:
+            printc(Fore.RED + f"C'è stato un errore durante il recupero delle informazioni meteo: {e}")
+        except KeyError as e:
+            printc(Fore.RED + f"C'è stato un errore durante l'elaborazione delle informazioni meteo: {e}")
+        except Exception as e:
+            printc(Fore.RED + f"Si è verificato un errore: {e}")
 
     elif 'screenshot' in query.lower():
         time.sleep(5)
@@ -260,6 +283,8 @@ def Iris_modules(query):
     elif 'computer' in query.lower() or 'pc' in query.lower():
         pc_action = input('Vuoi effettuare un riavvio o uno spegnimento?')
         if pc_action == 'riavvio':
+            printc("Eseguo", Fore.BLUE)
+            time.sleep(1)
             subprocess.Popen(["open", "-a", "iTerm"])
             time.sleep(2)
             new_tab()
@@ -271,6 +296,8 @@ def Iris_modules(query):
             keyboard.write(access_code)
             keyboard.send('enter')
         elif pc_action == 'spegnimento':
+            printc("Eseguo", Fore.BLUE)
+            time.sleep(1)
             subprocess.Popen(["open", "-a", "iTerm"])
             time.sleep(2)
             new_tab()
@@ -284,9 +311,28 @@ def Iris_modules(query):
         else:
             print('Non ho capito')
     elif 'timer' in query.lower():
-         printc('*DEBUG* Questa funzione non è ancor disponibile', Fore.RED)
+         printc('*DEBUG* Questa funzione non è ancora disponibile', Fore.RED)
+    elif 'check' in query.lower():
+        debug_var_check()
+    elif 'debug' in query.lower():
+        try:
+            with open("config.json", 'r', encoding='utf-8') as file:
+                data = json.load(file)
+            if data['debug'] == True:
+                data['debug'] = False
+                printc("*DEBUG NON ATTIVO*", Fore.GREEN)
+                debug_recheck()
+            else:
+                data['debug'] = True
+                debug_stor = True
+                printc("*DEBUG ATTIVO*", Fore.GREEN)
+                debug_recheck()
+            with open(config_path, 'w', encoding='utf-8') as file:
+                json.dump(data, file, ensure_ascii=False, indent=4)
+        except Exception as e:
+            printc(Fore.RED + f"Si è verificato un problema:{e}")
     else:
-        print("Non ho capito o forse ho un malfunzionamento")
+        printc("Non ho capito o forse ho un malfunzionamento", Fore.BLUE)
         restart_request = input("Provo a effettuare un riavvio?(y/n)")
         if restart_request == "y":
             login()
@@ -318,13 +364,6 @@ def login():
         printc("Le credenziali di accesso sono errate, riprova", Fore.RED)
         login()
 
-def debug_verify():
-    if debug == True:
-        print("*DEBUG ON*")
-        login()
-    else:
-        login()
-
 
 if __name__ == '__main__':
-    debug_verify()
+    login()

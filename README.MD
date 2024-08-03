@@ -18,9 +18,11 @@ Create a file named 'config.json' in this folder, copy this code and write your 
 {
     "access_code": " ", 
     "weather_api_key": " ",
-    "psw_def_length": 12
+    "psw_def_length": 12,
+    "debug": true 
 }
 ```
+The debug variable in 'config.json' can also be false, it is needed for some command in the program. 
 You can also add it to .zshrc file in your terminal as an alias to start it everywhere 
 
 ## Contributing
