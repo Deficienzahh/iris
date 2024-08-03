@@ -34,6 +34,7 @@ Example:
 ``` bash
 alias iris="cd (path of iris folder) && python3 main.py"
 ```
-
+## Do you see useless file?
+In this repository I also uploaded 'main_ui.py', 'server.py' and 'voc_module.py' which are not used now because they are tests for functions that I will add in the future. If you want you can delete it.
 ## Contributing
 You can contact me for bug fixes or to become a beta tester on [Telegram](https://t.me/lorehh_ric)
