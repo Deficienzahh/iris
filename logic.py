@@ -16,7 +16,7 @@ init() #initialize colorama
 KeyBoard = Controller() #need this for shortcut
 
 
-#json file
+# ---- Authentication ----
 script_dir = os.path.dirname(os.path.realpath(__file__))
 config_path = os.path.join(script_dir, 'config.json')
 with open('config.json') as config_file:
@@ -35,6 +35,8 @@ def debug_var_check():
         config_data = json.load(config_file)
         rdebug = config_data['debug']
     print(rdebug)
+
+# ---- Utilty ----
 def wishme():  
     hour = datetime.datetime.now().hour
     if hour >= 6 and  hour <= 12:
@@ -45,7 +47,7 @@ def wishme():
         return('Buonasera signore')
     else:
         return('Buonanotte signore')
-# Hotkeys
+# ---- Hotkeys ---- 
 def printc(text, color=Fore.WHITE):
     print(color + text + Style.RESET_ALL)
 
@@ -69,7 +71,7 @@ def hide_window():
         KeyBoard.press('m')
         KeyBoard.release('m')
 
-#Basic function
+# ---- Basic Function ----
 def screenshot():
     with KeyBoard.pressed(Key.cmd, Key.shift):
         KeyBoard.press('5')
@@ -85,7 +87,7 @@ def orario():
     time = datetime.datetime.now().strftime("%H:%M:%S")
     print("Sono le "+time)
 
-
+# ---- Logic Core ---- 
 def logic(query):
     query = query.strip().lower()
     if debug == True:
@@ -96,6 +98,7 @@ def logic(query):
     # Saved website
     if 'google' in query.lower():
         webbrowser.open("https://www.google.com")
+        print('Sto aprendo google')
         return "Apro google"
     elif 'gmail' in query.lower():
         webbrowser.open("https://www.gmail.com")
@@ -365,11 +368,9 @@ def login():
         printc("Le credenziali di accesso sono errate, riprova", Fore.RED)
         login()
 
+
 def server_login(input_psw):
     if input_psw == access_code:
         return True
     else:
         return False
-
-if __name__ == '__main__':
-    login()
