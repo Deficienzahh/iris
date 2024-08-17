@@ -20,7 +20,8 @@ pip install requests
 ## Installation
 To install Iris you can simply download this repository with git clone or in a .zip file and modify some files to make it work
 
-Create a file named 'config.json' in this folder, copy this code and write your preferences
+Create a file named 'config.json' in this folder, copy this code and write your preferences.
+You can obtain the weather api key on openweather website
 ``` json
 {
     "access_code": " ", 
@@ -32,9 +33,10 @@ Create a file named 'config.json' in this folder, copy this code and write your 
 You can also add iris to .zshrc file with 'nano ~/.zshrc' in your terminal as an alias to start it everywhere 
 Example:
 ``` bash
-alias iris="cd (path of iris folder) && python3 main.py"
+alias iris="cd (path of iris folder) && python3 cli.py" #cli file start iris on terminal 
+alias iris_server="cd (path of iris folder) && python3 server.py" #server file start iris on self-hosted server to use it web browser 
 ```
-## Do you see useless file?
-In this repository I also uploaded 'main_ui.py', 'server.py' and 'voc_module.py' which are not used now because they are tests for functions that I will add in the future. If you want you can delete it.
+## Iris won't work properly?
+The web version is work in progress. Some features like weather oesn't work properly on the web version.
 ## Contributing
 You can contact me for bug fixes or to become a beta tester on [Telegram](https://t.me/lorehh_ric)
