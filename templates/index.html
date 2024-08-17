@@ -7,11 +7,40 @@
     <title>Login</title>
 </head>
 <body>
-    <h1 class="titolo">Iris AI</h1> 
-    <form action="/auth" method="post">
-        <label for="text_input">Immetti la password per continuare</label>
-        <input type="text" id="text_input" name="text_input">
-        <button type="submit">Invia</button>
-    </form>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('index') }}">IRIS AI</a>
+        </div>
+        <div class="icons">
+            <a href="{{ url_for('open_source_code')}}">
+                <img src="{{ url_for('static', filename='icons/config_file.svg') }}" alt="Document">
+            </a>
+            <a href="{{ url_for('index')}}">
+                <img src="{{ url_for('static', filename='icons/user.svg') }}" alt="User">
+            </a>
+            <a href="{{ url_for('shutdown') }}">
+                <img src="{{ url_for('static', filename='icons/shutdown.svg') }}" alt="Power" style="cursor: pointer;">
+            </a>
+        </div>
+    </div>
+    <h1 class="titolo">Inserisci la password per accedere</h1> 
+    
+        <form autocomplete="off" action="/auth" method="POST">
+            <div class="input-container">
+            <input 
+                type="text" 
+                id="text_input" 
+                name="text_input"
+                placeholder="Immetti la password"
+            />
+            <button type="submit">
+                <img src="{{ url_for('static', filename='icons/send.svg') }}" alt="Send">
+            </button>
+        </form>
+    </div>
+    {% if error %}
+        <h2 class="error-message">{{ error }}</h2>
+    {% endif %}
 </body>
 </html>

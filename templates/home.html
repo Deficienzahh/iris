@@ -1,22 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for('static', filename='css/home_style.css')}}">
     <title>Home</title>
 </head>
 <body>
-    <h1 class="titolo">Iris AI</h1>
-    <h2>{{ greeting }}, come posso aiutarti?</h2>
-    <form action="/home" method="post">
-        <label for="text_input">Inserisci il tuo testo</label>
-        <input type="text" id="text_input" name="text_input">
-        <button type="submit">Invia</button>
-    </form>
-    {% if result %}
-    <h2>Risultato:</h2>
-    <p>{{result}}</p>
-    {% endif %}
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('home') }}">IRIS AI</a>
+        </div>
+        <div class="icons">
+            <img src="{{ url_for('static', filename='icons/config_file.svg') }}" alt="Document">
+            <a href="{{ url_for('index')}}">
+                <img src="{{ url_for('static', filename='icons/user.svg') }}" alt="User">
+            </a>
+            <a href="{{ url_for('shutdown') }}">
+                <img src="{{ url_for('static', filename='icons/shutdown.svg') }}" alt="Power" style="cursor: pointer;">
+            </a>
+        </div>
+    </div>
+
+    <!-- Contenuto Centrale -->
+    <div class="container">
+
+        
+        <div>
+            <h1>{{ greeting }}, come posso aiutarti?</h1>
+            <form autocomplete="off" action="/home" method="POST">
+                <div class="input-container">
+                    <input
+                        type="text"
+                        id="text_input"
+                        name="text_input"
+                        placeholder="Scrivi un messaggio"
+                    />
+                    <button type="submit">
+                        <img src="{{ url_for('static', filename='icons/send.svg') }}" alt="Send">
+                    </button>
+                </div>
+            </form>
+            {% if result %}
+            <h2>Risposta:</h2>
+            <p>{{result}}</p>
+            {% endif %}
+        </div>
+    </div>
 </body>
 </html>
