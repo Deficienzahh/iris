@@ -37,6 +37,6 @@ alias iris="cd (path of iris folder) && python3 cli.py" #cli file start iris on 
 alias iris_server="cd (path of iris folder) && python3 server.py" #server file start iris on self-hosted server to use it web browser 
 ```
 ## Iris won't work properly?
-The web version is work in progress. Some features like weather oesn't work properly on the web version.
+The web version is work in progress. Some features like weather doesn't work properly on the web version.
 ## Contributing
 You can contact me for bug fixes or to become a beta tester on [Telegram](https://t.me/lorehh_ric)
