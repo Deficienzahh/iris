@@ -207,6 +207,9 @@ def logic(query):
         time.sleep(1)
         keyboard.send('enter')
         return "Fatto"
+    elif 'spegniti' in query.lower():
+        printc(Fore.BLUE + "A presto") 
+        quit()
     elif 'diagnostic' in query.lower():
         subprocess.Popen(["open", "-a", "iTerm"])
         new_window()
