@@ -13,7 +13,9 @@
             <a href="{{ url_for('home') }}">IRIS AI</a>
         </div>
         <div class="icons">
-            <img src="{{ url_for('static', filename='icons/config_file.svg') }}" alt="Document">
+            <a href="{{ url_for('open_source_code')}}">
+                <img src="{{ url_for('static', filename='icons/config_file.svg') }}" alt="Document">
+            </a>
             <a href="{{ url_for('index')}}">
                 <img src="{{ url_for('static', filename='icons/user.svg') }}" alt="User">
             </a>
