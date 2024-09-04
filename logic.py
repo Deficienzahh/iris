@@ -95,7 +95,18 @@ def logic(query):
     else:
         pass 
 
+
     # Saved website
+    if "cerca su google" in query.lower():
+        # Estrai la query di ricerca
+        query = query.lower().split("cerca su google", 1)[1].strip()
+        
+        # Formatta la query per la ricerca su Google
+        search_url = f"https://www.google.com/search?q={query.replace(' ', '+')}"
+        
+        # Apri il browser con la ricerca su Google
+        webbrowser.open(search_url)
+        return f"Sto cercando su Google: {query}"
     if 'google' in query.lower():
         webbrowser.open("https://www.google.com")
         return "Apro Google"
@@ -147,6 +158,24 @@ def logic(query):
     elif 'chatgpt' in query.lower():
         webbrowser.open('https://chat.openai.com')
         return "Apro ChatGPT"
+    elif "dove siamo" in query.lower():
+        # URL per Google Maps
+        maps_url = "https://www.google.com/maps/search/?api=1&query=current+location"
+        
+        # Apri il browser con Google Maps
+        webbrowser.open(maps_url)
+        return "Sto aprendo Google Maps per la tua posizione attuale."
+    elif "dove si trova" in query.lower():
+        # Estrai la query di ricerca
+        location = query.lower().split("dove si trova", 1)[1].strip()
+        
+        # Formatta la query per la ricerca su Google Maps
+        maps_url = f"https://www.google.com/maps/search/?api=1&query={location.replace(' ', '+')}"
+        
+        # Apri il browser con Google Maps
+        webbrowser.open(maps_url)
+        return f"Sto cercando su Google Maps: {location}"
+
     # App
     elif 'premiere' in query.lower():
         subprocess.Popen([
@@ -207,7 +236,7 @@ def logic(query):
         time.sleep(1)
         keyboard.send('enter')
         return "Fatto"
-    elif 'spegniti' in query.lower():
+    elif 'spegniti' in query.lower(): #Spegni iris
         printc(Fore.BLUE + "A presto") 
         quit()
     elif 'diagnostic' in query.lower():
@@ -278,39 +307,50 @@ def logic(query):
     elif 'standby' in query.lower():
         login()
     elif 'meteo' in query.lower():
-        city = input("Per quale città vuoi conoscere il meteo?")
-        base_url = 'http://api.openweathermap.org/data/2.5/weather?'
-        try:
-            complete_url = base_url + 'q=' + city + '&appid=' + weather_api_key
-
-            response = requests.get(complete_url)
-
-            if response.status_code == 200:
-                data = response.json()
-                main_data = data['weather'][0]['main']
-                description = data['weather'][0]['description']
-                temperature = data['main']['temp']
-                temperature_celsius = temperature - 273.15  # La temperatura è fornita in Kelvin e successivamente convertita in Celsius
-                print(
-                    f"A {city} il tempo è {main_data} ({description}) con una temperatura di {temperature_celsius:.2f}°C")
-            else:
-                print("Impossibile ottenere informazioni meteo per la città specificata.")
-        except requests.RequestException as e:
-            printc(Fore.RED + f"C'è stato un errore durante il recupero delle informazioni meteo: {e}")
-        except KeyError as e:
-            printc(Fore.RED + f"C'è stato un errore durante l'elaborazione delle informazioni meteo: {e}")
-        except Exception as e:
-            printc(Fore.RED + f"Si è verificato un errore: {e}")
+         # Estrai il nome della città
+        city = query.lower().split("meteo", 1)[1].strip()
+        
+        # URL base per l'API di OpenWeather
+        base_url = "http://api.openweathermap.org/data/2.5/weather"
+        
+        # Parametri della richiesta
+        params = {
+            'q': city,
+            'appid': weather_api_key,
+            'units': 'metric',  # Per ottenere la temperatura in gradi Celsius
+            'lang': 'it'  # Per ottenere i dati in italiano
+        }
+        
+        # Effettua la richiesta all'API di OpenWeather
+        response = requests.get(base_url, params=params)
+        
+        if response.status_code == 200:
+            data = response.json()
+            # Estrai le informazioni di interesse
+            weather_description = data['weather'][0]['description']
+            temperature = data['main']['temp']
+            city_name = data['name']
+            country = data['sys']['country']
+            
+            # Risultato da restituire all'utente
+            weather_info = f"Il meteo a {city_name}, {country} è: {weather_description} con una temperatura di {temperature}°C."
+        else:
+            weather_info = "Non sono riuscito a trovare il meteo per la città richiesta. Controlla il nome e riprova."
+        
+        # Formatta la query per la ricerca del meteo su Google
+        weather_search_url = f"https://www.google.com/search?q={city.replace(' ', '+')}+meteo"
+        
+        # Apri il browser con la ricerca del meteo
+        webbrowser.open(weather_search_url)
+        
+        return weather_info
 
     elif 'screenshot' in query.lower():
         time.sleep(5)
         screenshot()
         return "Fatto!"
 
-    elif 'computer' in query.lower() or 'pc' in query.lower():
-        pc_action = input('Vuoi effettuare un riavvio o uno spegnimento?')
-        if pc_action == 'riavvio':
-            printc("Eseguo", Fore.GREEN)
+    elif 'spegni' in query.lower():
             time.sleep(1)
             subprocess.Popen(["open", "-a", "iTerm"])
             time.sleep(2)
@@ -322,7 +362,7 @@ def logic(query):
             time.sleep(1)
             keyboard.write(access_code)
             keyboard.send('enter')
-        elif pc_action == 'spegnimento':
+    elif 'riavvia' in query.lower():
             printc("Eseguo", Fore.GREEN)
             time.sleep(1)
             subprocess.Popen(["open", "-a", "iTerm"])
@@ -335,8 +375,6 @@ def logic(query):
             time.sleep(1)
             keyboard.write('viapcampagna')
             keyboard.send('enter')
-        else:
-            print('Non ho capito')
     elif 'timer' in query.lower():
         printc('*DEBUG* Questa funzione non è ancora disponibile', Fore.RED)
     elif 'check' in query.lower():

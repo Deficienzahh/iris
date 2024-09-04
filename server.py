@@ -27,7 +27,7 @@ def auth():
 
 def shutdown_server():
     pid = os.getpid()  # Ottiene il PID del processo corrente
-    os.kill(pid, signal.SIGINT)  # Invia un segnale per terminare il processodef shutdown():
+    os.kill(pid, signal.SIGINT)  # Invia un segnale per terminare il processo def shutdown():
 
 @app.route('/home', methods=['POST', 'GET'])
 def home():
